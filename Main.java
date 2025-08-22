@@ -71,7 +71,7 @@ public class Main {
                     HTMLFrame.setSize(500,500);
                     HTMLFrame.setVisible(true);
                     HTMLFrame.setLayout(new BoxLayout(HTMLFrame.getContentPane(), BoxLayout.Y_AXIS));
-                    ElementMenu elementMenu = new ElementMenu(HTMLFrame, colors);
+                    ElementMenu elementMenu = new ElementMenu(HTMLFrame, compressedImage, colors);
                     elementMenu.createAndShowGUI();
 
                 } catch (Exception f) {
