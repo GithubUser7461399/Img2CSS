@@ -66,7 +66,7 @@ public class Main {
                         default:
                             break;
                     }
-                    JFrame HTMLFrame = new JFrame("Generate Matrix");
+                    JFrame HTMLFrame = new JFrame("Generate Matrix: " + loader.getFile().getName());
                     HTMLFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     HTMLFrame.setSize(500,500);
                     HTMLFrame.setVisible(true);

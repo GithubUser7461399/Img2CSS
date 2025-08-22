@@ -9,7 +9,8 @@ import java.awt.BorderLayout;
 
 public class ImageLoader {
     private BufferedImage image; 
-    JFrame frame;
+    private JFrame frame;
+    private File file;
     public ImageLoader(JFrame frame) {
         this.frame = frame;
     }
@@ -26,7 +27,7 @@ public class ImageLoader {
                     System.out.println("No file selected.");
                     return;
                 }
-                File file = fileChooser.getSelectedFile();
+                file = fileChooser.getSelectedFile();
                 try {
                     image = ImageIO.read(file);
                 } catch (IOException f) {
@@ -40,5 +41,8 @@ public class ImageLoader {
     }
     public BufferedImage getImage() {
         return image;
+    }
+    public File getFile() {
+    return file;
     }
 }
