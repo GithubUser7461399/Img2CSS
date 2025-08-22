@@ -44,18 +44,35 @@ public class Main {
                     switch (response) {
                         case JOptionPane.OK_OPTION:
                             JFileChooser fileChooser = new JFileChooser();
-                            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                            int returnValue = fileChooser.showDialog(frame, "Select Directory");
+                            fileChooser.setDialogTitle("Save File");
+                            fileChooser.setSelectedFile(new File("image.jpg"));
+                            int returnValue = fileChooser.showSaveDialog(frame);
                             if (returnValue == JFileChooser.APPROVE_OPTION) {
                                 File selectedDirectory = fileChooser.getSelectedFile();
-                                ImageIO.write(compressedImage, "jpg", new File(selectedDirectory.getAbsolutePath() + "/compressed_image.jpg"));
-                                JOptionPane.showMessageDialog(frame, "Compressed image saved as compressed_image.jpg");
+                                if (selectedDirectory.exists()) {
+                                    int overwrite = JOptionPane.showConfirmDialog(frame,
+                                    "File already exists. Do you want to overwrite it?",
+                                    "Confirm Overwrite",
+                                    JOptionPane.YES_NO_OPTION);
+                                    if (overwrite != JOptionPane.YES_OPTION) {
+                                        return; // User chose not to overwrite
+                                    }
+                                }
+                                ImageIO.write(compressedImage, "jpg", selectedDirectory);
+                                JOptionPane.showMessageDialog(frame, "Compressed image saved as " + selectedDirectory.getName());
                             }
                             break;
                     
                         default:
                             break;
                     }
+                    JFrame HTMLFrame = new JFrame("Generate Matrix");
+                    HTMLFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    HTMLFrame.setSize(500,500);
+                    HTMLFrame.setVisible(true);
+                    HTMLFrame.setLayout(new BoxLayout(HTMLFrame.getContentPane(), BoxLayout.Y_AXIS));
+                    ElementMenu elementMenu = new ElementMenu(HTMLFrame, colors);
+                    elementMenu.createAndShowGUI();
 
                 } catch (Exception f) {
                     JOptionPane.showMessageDialog(frame, "Error saving image: " + f.getMessage());

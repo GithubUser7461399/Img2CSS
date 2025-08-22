@@ -32,6 +32,7 @@ public class ColorPickerMenu {
                         image = loader.getImage();
                         numColors = Integer.parseInt(inputColors.getText());
                         colors = initializeClustersKMeansPlusPlus(image, numColors);
+                        colorPickers.clear();
                         colorMenu.removeAll();
                         for (ColorCluster color : colors) {
                             colorPickers.add(new ColorPicker(frame, color.color));
