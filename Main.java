@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -35,45 +36,74 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    BufferedImage image = loader.getImage();
                     int width = Integer.parseInt(x.getText());
                     int height = Integer.parseInt(y.getText());
                     List<ColorCluster> colors = colorMenu.getColours();
-                    BufferedImage compressedImage = compressImage(image, width, height, colors);
-                    int response = JOptionPane.showConfirmDialog(frame, "Do you want to save the image?", "Confirm", JOptionPane.OK_CANCEL_OPTION);
-                    switch (response) {
-                        case JOptionPane.OK_OPTION:
-                            JFileChooser fileChooser = new JFileChooser();
-                            fileChooser.setDialogTitle("Save File");
-                            fileChooser.setSelectedFile(new File("image.jpg"));
-                            int returnValue = fileChooser.showSaveDialog(frame);
-                            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                                File selectedDirectory = fileChooser.getSelectedFile();
-                                if (selectedDirectory.exists()) {
-                                    int overwrite = JOptionPane.showConfirmDialog(frame,
-                                    "File already exists. Do you want to overwrite it?",
-                                    "Confirm Overwrite",
-                                    JOptionPane.YES_NO_OPTION);
-                                    if (overwrite != JOptionPane.YES_OPTION) {
-                                        return; // User chose not to overwrite
-                                    }
-                                }
-                                ImageIO.write(compressedImage, "jpg", selectedDirectory);
-                                JOptionPane.showMessageDialog(frame, "Compressed image saved as " + selectedDirectory.getName());
+                    MediaTypeChecker typeChecker = new MediaTypeChecker();
+                    if (typeChecker.isVideo(loader.getFile())) {
+                        JFileChooser fileChooser = new JFileChooser();
+                        fileChooser.setDialogTitle("Choose Image Sequence Save Directory");
+                        File selectedDirectory = fileChooser.getSelectedFile();
+                        VideoToImageSequence vidtoimg = new VideoToImageSequence();
+                        vidtoimg.generateImageSequence(loader.getFile(), selectedDirectory);
+                        int i = 0;
+                        for (File file : selectedDirectory.listFiles()) {
+                            BufferedImage image;
+                            try {
+                                image = ImageIO.read(file);
+                            } catch (IOException f) {
+                                JOptionPane.showMessageDialog(frame, "Error loading image: " + f.getMessage());
+                                return;
                             }
-                            break;
-                    
-                        default:
-                            break;
-                    }
-                    JFrame HTMLFrame = new JFrame("Generate Matrix: " + loader.getFile().getName());
-                    HTMLFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    HTMLFrame.setSize(500,500);
-                    HTMLFrame.setVisible(true);
-                    HTMLFrame.setLayout(new BoxLayout(HTMLFrame.getContentPane(), BoxLayout.Y_AXIS));
-                    ElementMenu elementMenu = new ElementMenu(HTMLFrame, compressedImage, colors);
-                    elementMenu.createAndShowGUI();
+                            BufferedImage compressedImage = compressImage(image, width, height, colors);
+                            String fileName = String.format("image_%04d.jpg", i);
+                            i++;
+                            try {
+                                File outputFile = new File(selectedDirectory, fileName);
+                                ImageIO.write(compressedImage, "jpg", outputFile);
+                                System.out.println("Saved: " + outputFile.getAbsolutePath());
+                            } catch (IOException f) {
+                                System.err.println("Error saving image: " + f.getMessage());
+                            }
+                        }
 
+                    } else {
+                        BufferedImage image = loader.getImage();
+                        BufferedImage compressedImage = compressImage(image, width, height, colors);
+                        int response = JOptionPane.showConfirmDialog(frame, "Do you want to save the image?", "Confirm", JOptionPane.OK_CANCEL_OPTION);
+                        switch (response) {
+                            case JOptionPane.OK_OPTION:
+                                JFileChooser fileChooser = new JFileChooser();
+                                fileChooser.setDialogTitle("Save File");
+                                fileChooser.setSelectedFile(new File("image.jpg"));
+                                int returnValue = fileChooser.showSaveDialog(frame);
+                                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                                    File selectedDirectory = fileChooser.getSelectedFile();
+                                    if (selectedDirectory.exists()) {
+                                        int overwrite = JOptionPane.showConfirmDialog(frame,
+                                        "File already exists. Do you want to overwrite it?",
+                                        "Confirm Overwrite",
+                                        JOptionPane.YES_NO_OPTION);
+                                        if (overwrite != JOptionPane.YES_OPTION) {
+                                            return; // User chose not to overwrite
+                                        }
+                                    }
+                                    ImageIO.write(compressedImage, "jpg", selectedDirectory);
+                                    JOptionPane.showMessageDialog(frame, "Compressed image saved as " + selectedDirectory.getName());
+                                }
+                                break;
+                        
+                            default:
+                                break;
+                        }
+                        JFrame HTMLFrame = new JFrame("Generate Matrix: " + loader.getFile().getName());
+                        HTMLFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        HTMLFrame.setSize(500,500);
+                        HTMLFrame.setVisible(true);
+                        HTMLFrame.setLayout(new BoxLayout(HTMLFrame.getContentPane(), BoxLayout.Y_AXIS));
+                        ElementMenu elementMenu = new ElementMenu(HTMLFrame, compressedImage, colors);
+                        elementMenu.createAndShowGUI();
+                    }
                 } catch (Exception f) {
                     JOptionPane.showMessageDialog(frame, "Error saving image: " + f.getMessage());
                 }

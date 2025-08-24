@@ -21,7 +21,7 @@ public class ImageLoader {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setDialogTitle("Select an Image");
+                fileChooser.setDialogTitle("Select Media");
                 int userSelection = fileChooser.showOpenDialog(null);
                 if (userSelection != JFileChooser.APPROVE_OPTION) {
                     System.out.println("No file selected.");
@@ -34,7 +34,7 @@ public class ImageLoader {
                     JOptionPane.showMessageDialog(frame, "Error loading image: " + f.getMessage());
                     return;
                 }
-                label.setText("Current image: " + file.getName() + ", Dimensions: " + image.getWidth() + "px, " + image.getHeight() + "px.");
+                label.setText("Current file: " + file.getName() + ", Dimensions: " + image.getWidth() + "px, " + image.getHeight() + "px.");
             }});
         frame.add(label);
         frame.add(button, BorderLayout.NORTH);
