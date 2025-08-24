@@ -39,10 +39,10 @@ public class ElementMenu {
                 submit.addActionListener(new ActionListener() {
                    public void actionPerformed(ActionEvent e) {
                     String matrix = "<div style=\"width:" + image.getWidth()*10 + "px; height:" + image.getHeight()*10 + "px; display: grid; grid-template-columns: repeat(" + image.getWidth() + ", 10px); grid-template-rows: repeat(" + image.getHeight() + ", 10px);\">";
-                    for (int i = 0; i < image.getWidth(); i++) {
-                        for (int j = 0; j < image.getHeight(); j++) {
+                    for (int i = 0; i < image.getHeight(); i++) {
+                        for (int j = 0; j < image.getWidth(); j++) {
                             for (int k = 0; k < elements.size(); k++) {
-                                if (image.getRGB(i, j)==colors.get(k).color.getRGB()) {
+                                if (image.getRGB(j, i)==colors.get(k).color.getRGB()) {
                                     matrix = matrix + elements.get(k).getText();
                                 }
                             }
@@ -76,11 +76,16 @@ public class ElementMenu {
                                 } catch (IOException f) {
                                     System.out.println(f);
                                 }
-                                JOptionPane.showMessageDialog(frame, "Compressed image saved as " + selectedDirectory.getName());
+                                JOptionPane.showMessageDialog(frame, "Matrix saved as " + selectedDirectory.getName());
                             }
                             return;
                         case JOptionPane.NO_OPTION:
-                            JOptionPane.showMessageDialog(frame, matrix);
+                            JTextArea ta = new JTextArea(matrix, 10, 10);
+                            ta.setEditable(false);
+                            ta.setWrapStyleWord(true);
+                            ta.setLineWrap(true);
+                            ta.setCaretPosition(0);
+                            JOptionPane.showMessageDialog(frame, new JScrollPane(ta), "RESULT", JOptionPane.INFORMATION_MESSAGE);
                             System.out.print(matrix);
                         return;
                     }
