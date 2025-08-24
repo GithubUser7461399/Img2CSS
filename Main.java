@@ -67,7 +67,7 @@ public class Main {
                             break;
                     }
                     JFrame HTMLFrame = new JFrame("Generate Matrix: " + loader.getFile().getName());
-                    HTMLFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    HTMLFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     HTMLFrame.setSize(500,500);
                     HTMLFrame.setVisible(true);
                     HTMLFrame.setLayout(new BoxLayout(HTMLFrame.getContentPane(), BoxLayout.Y_AXIS));

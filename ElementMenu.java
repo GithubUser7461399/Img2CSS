@@ -11,12 +11,13 @@ import java.awt.image.BufferedImage;
 public class ElementMenu {
     JFrame frame;
     BufferedImage image;
-    List<JTextField> elements = new ArrayList<>();
-    List<ColorCluster> colors = new ArrayList<>();
+    private List<JTextField> elements = new ArrayList<>();
+    private List<ColorCluster> colors = new ArrayList<>();
     public ElementMenu(JFrame frame, BufferedImage image, List<ColorCluster> colors) {
         this.frame = frame;
         this.colors = colors;
         this.image = image;
+        this.elements = new ArrayList<>();
     }
     public void createAndShowGUI() {
         try {
@@ -30,14 +31,14 @@ public class ElementMenu {
                 JPanel panel = new JPanel();
                 panel.setLayout(new FlowLayout());
                 panel.add(colorLabel);
-                elements.add(new JTextField("<div style=\"background-color: #" + Integer.toHexString(cluster.color.getRed()) + Integer.toHexString(cluster.color.getGreen()) + Integer.toHexString(cluster.color.getBlue()) + ";\"></div>"));
+                elements.add(new JTextField("<div style=\"background-color: " + String.format("#%06x", cluster.color.getRGB() & 0x00FFFFFF) + ";\"></div>"));
                 panel.add(elements.get(elements.size()-1));
                 frame.add(panel);
             }
             JButton submit = new JButton("Confirm Elements");
                 submit.addActionListener(new ActionListener() {
                    public void actionPerformed(ActionEvent e) {
-                    String matrix = "<div style=\"width:" + image.getWidth()*10 + "px; height:" + image.getHeight()*10 + "px;\" >";
+                    String matrix = "<div style=\"width:" + image.getWidth()*10 + "px; height:" + image.getHeight()*10 + "px; display: grid; grid-template-columns: repeat(" + image.getWidth() + ", 10px); grid-template-rows: repeat(" + image.getHeight() + ", 10px);\">";
                     for (int i = 0; i < image.getWidth(); i++) {
                         for (int j = 0; j < image.getHeight(); j++) {
                             for (int k = 0; k < elements.size(); k++) {

@@ -51,6 +51,7 @@ public class ColorPickerMenu {
         frame.add(dropdownButton);
     }
     public List<ColorCluster> getColours() {
+        finalColors.clear();
         for (ColorPicker colorPicker : colorPickers) {
             finalColors.add(new ColorCluster(colorPicker.getColor()));
         }
